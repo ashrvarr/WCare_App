@@ -16,12 +16,6 @@ class BrandActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_brand)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
-
         // here setKeepOnScreenCondition false so, activity redirect another activity
         // and some api call here
         // if setKeepOnScreenCondition true so, activity code not redirect another activity
