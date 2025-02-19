@@ -6,9 +6,9 @@
     </style>
 
     <style name="MySplash" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenAnimatedIcon">@drawable/app_icon_without_an_icon_background</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/logo</item>
         <!--    Here   windowSplashScreenBrandingImage work target api S(Api 31) <=  -->
-        <item name="android:windowSplashScreenBrandingImage" tools:targetApi="s">@drawable/app_banner_without_background</item>
+        <item name="android:windowSplashScreenBrandingImage" tools:targetApi="s">@drawable/ic_launcher_background</item>
         <item name="windowSplashScreenBackground">#000</item>
         <item name="windowSplashScreenAnimationDuration">2000</item>
         <item name="postSplashScreenTheme">@style/Base.Theme.WCare</item>
