@@ -3,7 +3,7 @@
     <style name="Base.Theme.WCare" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
 
-            <item name="fontFamily">monospace</item>                                    //шрифт
+            <item name="fontFamily">@font/regular</item>
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 

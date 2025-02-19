@@ -87,11 +87,12 @@ class RegisterActivity : AppCompatActivity() {
                 && validatePassword(edPassword, edPasswordL)
                 && validateConPassword(edPassword, edConPassword, edConPasswordL)
             ) {
-                Toast.makeText(this, "Success", Toast.LENGTH_LONG).show()
-            } else {
-                Toast.makeText(this, "Failed", Toast.LENGTH_LONG).show()
+                if (isConnected(this)){
+                    Toast.makeText(this, "Success", Toast.LENGTH_LONG).show()
+                }else{
+                    longToastShow("No Internet Connection")
+                }
             }
-
         }
     }
 }
