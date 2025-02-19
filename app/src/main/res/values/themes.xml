@@ -47,4 +47,9 @@
         <item name="cornerFamily">cut</item>
         <item name="cornerSize">12dp</item>
     </style>
+    
+    <style name="DialogCustomeTheme" parent="android:Theme.Holo.Dialog.NoActionBar">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+    </style>
 </resources>
