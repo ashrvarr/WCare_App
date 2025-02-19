@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.google.firebase.auth.FirebaseAuth
 
 class BrandActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,8 +22,14 @@ class BrandActivity : AppCompatActivity() {
         // if setKeepOnScreenCondition true so, activity code not redirect another activity
         splashScreen.setKeepOnScreenCondition { true }
         Handler(Looper.getMainLooper()).postDelayed({
-            startActivity(Intent(this, LoginActivity::class.java))
-            finish()
+            if (FirebaseAuth.getInstance().currentUser == null){
+                startActivity(Intent(this, LoginActivity::class.java))
+                finish()
+            }else{
+                startActivity(Intent(this, MainActivity::class.java))
+                finish()
+            }
+
         }, 2000)
     }
 }

@@ -1,6 +1,7 @@
 package com.example.wcare
 
 import android.app.Dialog
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -11,11 +12,14 @@ import android.widget.EditText
 import android.widget.Toast
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.UserProfileChangeRequest
 
 class RegisterActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
+
         val loadingDialog = Dialog(this, R.style.DialogCustomeTheme).apply {
             setContentView(R.layout.loading_dialog)
             window!!.setLayout(
@@ -24,6 +28,7 @@ class RegisterActivity : AppCompatActivity() {
             )
             setCancelable(false)
         }
+
         val logInBtn = findViewById<Button>(R.id.logInBtn)
         logInBtn.setOnClickListener{
             finish()
@@ -88,7 +93,32 @@ class RegisterActivity : AppCompatActivity() {
                 && validateConPassword(edPassword, edConPassword, edConPasswordL)
             ) {
                 if (isConnected(this)){
-                    Toast.makeText(this, "Success", Toast.LENGTH_LONG).show()
+                    loadingDialog.show()
+                    FirebaseAuth.getInstance().createUserWithEmailAndPassword(
+                        edEmail.text.toString().trim(),
+                        edPassword.text.toString().trim())
+                        .addOnSuccessListener {
+                            val user = FirebaseAuth.getInstance().currentUser!!
+                            val profileUpdate = UserProfileChangeRequest.Builder()
+                                .setDisplayName(edName.text.toString().trim())
+                                .build()
+                            user.updateProfile(profileUpdate).addOnSuccessListener {
+                                longToastShow("Register Successful")
+                                loadingDialog.dismiss()
+                                val mainIntent = Intent(this,MainActivity::class.java)
+                                mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                                mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                startActivity(mainIntent)
+                                finish()
+                            }.addOnFailureListener{
+                                loadingDialog.dismiss()
+                                it.message?.let { it1 -> longToastShow(it1) }
+                            }
+                        }
+                        .addOnFailureListener{
+                            loadingDialog.dismiss()
+                            it.message?.let { it1 -> longToastShow(it1) }
+                        }
                 }else{
                     longToastShow("No Internet Connection")
                 }

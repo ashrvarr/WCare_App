@@ -1,10 +1,12 @@
 package com.example.wcare
 
+import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -12,16 +14,27 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.UserProfileChangeRequest
 
 class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-            val signUpBtn = findViewById<Button>(R.id.signUpBtn)
-            signUpBtn.setOnClickListener {
-                    startActivity(Intent(this, RegisterActivity::class.java))
-            }
+        val loadingDialog = Dialog(this, R.style.DialogCustomeTheme).apply {
+            setContentView(R.layout.loading_dialog)
+            window!!.setLayout(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
+            setCancelable(false)
+        }
+
+        val signUpBtn = findViewById<Button>(R.id.signUpBtn)
+        signUpBtn.setOnClickListener {
+            startActivity(Intent(this, RegisterActivity::class.java))
+        }
 
         val edEmail = findViewById<TextInputEditText>(R.id.edEmail)
         val edEmailL = findViewById<TextInputLayout>(R.id.edEmailL)
@@ -53,9 +66,27 @@ class LoginActivity : AppCompatActivity() {
             if (validateEmail(edEmail, edEmailL)
                 && validatePassword(edPassword, edPasswordL)
             ) {
-                Toast.makeText(this, "Success", Toast.LENGTH_LONG).show()
-            } else {
-                Toast.makeText(this, "Failed", Toast.LENGTH_LONG).show()
+                if (isConnected(this)){
+                    loadingDialog.show()
+                    FirebaseAuth.getInstance().signInWithEmailAndPassword(
+                        edEmail.text.toString().trim(),
+                        edPassword.text.toString().trim())
+                        .addOnSuccessListener {
+                            longToastShow("Login Successful")
+                            loadingDialog.dismiss()
+                            val mainIntent = Intent(this,MainActivity::class.java)
+                            mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                            mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            startActivity(mainIntent)
+                            finish()
+                        }
+                        .addOnFailureListener{
+                            loadingDialog.dismiss()
+                            it.message?.let { it1 -> longToastShow(it1) }
+                        }
+                }else{
+                    longToastShow("No Internet Connection")
+                }
             }
 
         }
