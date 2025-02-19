@@ -25,8 +25,8 @@ fun validateConPassword(
             false
         }
         edConPassword.text.toString().trim().length < 8 || edConPassword.text.toString()
-            .trim().length > 10 -> {
-            edConPasswordL.error = "Password must be 8 to 10 Character!"
+            .trim().length > 20 -> {
+            edConPasswordL.error = "Password must be 8 to 20 Character!"
             false
 
         }
@@ -51,8 +51,8 @@ fun validatePassword(
             false
         }
         edPassword.text.toString().trim().length < 8 || edPassword.text.toString()
-            .trim().length > 10 -> {
-            edPasswordL.error = "Password must be 8 to 10 Character!"
+            .trim().length > 20 -> {
+            edPasswordL.error = "Password must be 8 to 20 Character!"
             false
         }
         else -> {

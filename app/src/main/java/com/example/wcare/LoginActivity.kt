@@ -15,6 +15,7 @@ import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
 import java.security.SecureRandom
 import android.util.Base64
+import android.widget.TextView
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -22,18 +23,6 @@ import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.GoogleAuthProvider
 
 class LoginActivity : AppCompatActivity() {
-//    fun generateNonce(length: Int = 16): String {
-//        val secureRandom = SecureRandom()
-//        val nonceBytes = ByteArray(length)
-//        secureRandom.nextBytes(nonceBytes)
-//        // Encode without line breaks
-//        return Base64.encodeToString(nonceBytes, Base64.NO_WRAP)
-//    }
-//
-//    val nonce = generateNonce()
-//
-//    val WEB_CLIENT_ID by lazy { getString(R.string.default_web_client_id) }
-
     private val googleSignInRequestCode = 234
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -123,6 +112,11 @@ class LoginActivity : AppCompatActivity() {
             }else{
                 longToastShow("No Internet Connection")
             }
+        }
+
+        val forgotPasswordTxt = findViewById<TextView>(R.id.forgotPasswordTxt)
+        forgotPasswordTxt.setOnClickListener {
+            startActivity(Intent(this,ForgotPasswordActivity::class.java))
         }
 
     }
