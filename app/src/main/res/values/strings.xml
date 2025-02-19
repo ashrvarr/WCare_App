@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name" translatable="false">WCare</string>
+
+    <string name="default_web_client_id">842810956645-0ghbv19ldt6lngs1l7e5u512uiv17e5e.apps.googleusercontent.com</string>
 </resources>
+

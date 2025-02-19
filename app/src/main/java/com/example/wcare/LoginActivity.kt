@@ -109,7 +109,7 @@ class LoginActivity : AppCompatActivity() {
         }
 
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken("842810956645-0ghbv19ldt6lngs1l7e5u512uiv17e5e.apps.googleusercontent.com")
+            .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
             .build()
 
@@ -121,7 +121,7 @@ class LoginActivity : AppCompatActivity() {
                 val signInIntent =  googleSignInClient.signInIntent
                 startActivityForResult(signInIntent,googleSignInRequestCode)
             }else{
-                longToastShow("No Internet Connection!")
+                longToastShow("No Internet Connection")
             }
         }
 
