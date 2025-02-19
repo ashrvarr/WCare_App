@@ -3,21 +3,39 @@ package com.example.wcare
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
+import android.provider.ContactsContract.CommonDataKinds.Identity
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.Button
 import android.widget.LinearLayout
-import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import com.google.android.gms.common.SignInButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.UserProfileChangeRequest
+import java.security.SecureRandom
+import android.util.Base64
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.GoogleAuthProvider
 
 class LoginActivity : AppCompatActivity() {
+//    fun generateNonce(length: Int = 16): String {
+//        val secureRandom = SecureRandom()
+//        val nonceBytes = ByteArray(length)
+//        secureRandom.nextBytes(nonceBytes)
+//        // Encode without line breaks
+//        return Base64.encodeToString(nonceBytes, Base64.NO_WRAP)
+//    }
+//
+//    val nonce = generateNonce()
+//
+//    val WEB_CLIENT_ID by lazy { getString(R.string.default_web_client_id) }
+
+    private val googleSignInRequestCode = 234
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
@@ -88,8 +106,60 @@ class LoginActivity : AppCompatActivity() {
                     longToastShow("No Internet Connection")
                 }
             }
-
         }
 
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken("842810956645-0ghbv19ldt6lngs1l7e5u512uiv17e5e.apps.googleusercontent.com")
+            .requestEmail()
+            .build()
+
+        val googleSignInClient = GoogleSignIn.getClient(this,gso)
+
+        val googleSignInBtn = findViewById<SignInButton>(R.id.googleSignInBtn)
+        googleSignInBtn.setOnClickListener {
+            if (isConnected(this)){
+                val signInIntent =  googleSignInClient.signInIntent
+                startActivityForResult(signInIntent,googleSignInRequestCode)
+            }else{
+                longToastShow("No Internet Connection!")
+            }
+        }
+
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        when (requestCode){
+            googleSignInRequestCode -> {
+                try {
+                    val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+                    val account = task.getResult(ApiException::class.java)
+                    firebaseAuthWithGoogle(account)
+
+                }catch (e: ApiException){
+                    e.printStackTrace()
+                    e.message?.let { longToastShow(it) }
+                }
+            }
         }
     }
+
+    private fun firebaseAuthWithGoogle(account: GoogleSignInAccount) {
+        val credential = GoogleAuthProvider.getCredential(account.idToken,null)
+        FirebaseAuth.getInstance().signInWithCredential(credential)
+            .addOnSuccessListener {
+                longToastShow("Login Successful")
+                val mainIntent = Intent(this,MainActivity::class.java)
+                mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(mainIntent)
+                finish()
+            }
+            .addOnFailureListener {
+                it.printStackTrace()
+                it.message?.let { it1 -> longToastShow(it1) }
+            }
+
+    }
+}

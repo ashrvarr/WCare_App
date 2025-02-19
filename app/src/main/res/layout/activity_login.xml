@@ -127,6 +127,15 @@
             app:strokeColor="#F4EABC"
             android:text="Sign Up"
             android:textColor="#440560"/>
+
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/googleSignInBtn"
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"
+            app:buttonSize="wide"/>
+
+
+
     </LinearLayout>
 
     <ImageView
